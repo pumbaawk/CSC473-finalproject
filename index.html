@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Group Finder</title>
+    <style>
+        /* CSS Styling */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .form-container, .search-container {
+            margin: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 400px;
+            margin: auto;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .group-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .group-item {
+            background: #e7e7e7;
+            padding: 15px;
+            margin: 10px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Study Group Finder</h1>
+
+    <!-- Group Creation Form -->
+    <div class="form-container">
+        <h2>Create a Study Group</h2>
+        <form id="groupForm">
+            <input type="text" id="courseName" placeholder="Course Name" required>
+            <input type="text" id="topic" placeholder="Topic" required>
+            <input type="number" id="maxParticipants" placeholder="Max Participants" required>
+            <button type="submit">Create Group</button>
+        </form>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search by Course or Topic">
+    </div>
+
+    <!-- Group Display Section -->
+    <div class="group-list" id="groupList"></div>
+
+    <script>
+        // JavaScript for Functionality
+
+        // Group data array
+        let groups = [];
+
+        // Get HTML elements
+        const groupForm = document.getElementById('groupForm');
+        const groupList = document.getElementById('groupList');
+        const searchBar = document.getElementById('searchBar');
+
+        // Handle form submission to create a new group
+        groupForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const courseName = document.getElementById('courseName').value;
+            const topic = document.getElementById('topic').value;
+            const maxParticipants = document.getElementById('maxParticipants').value;
+
+            // Create new group object
+            const newGroup = {
+                courseName,
+                topic,
+                maxParticipants,
+                currentParticipants: 0
+            };
+
+            // Add new group to array and reset form
+            groups.push(newGroup);
+            groupForm.reset();
+
+            // Display updated groups
+            displayGroups(groups);
+        });
+
+        // Function to display groups
+        function displayGroups(groupArray) {
+            groupList.innerHTML = ''; // Clear the list
+            groupArray.forEach(group => {
+                const groupItem = document.createElement('div');
+                groupItem.classList.add('group-item');
+                groupItem.innerHTML = `
+                    <h3>${group.courseName}</h3>
+                    <p>Topic: ${group.topic}</p>
+                    <p>Max Participants: ${group.maxParticipants}</p>
+                `;
+                groupList.appendChild(groupItem);
+            });
+        }
+
+        // Search and filter groups by course name or topic
+        searchBar.addEventListener('input', function(event) {
+            const searchTerm = event.target.value.toLowerCase();
+            const filteredGroups = groups.filter(group => 
+                group.courseName.toLowerCase().includes(searchTerm) || 
+                group.topic.toLowerCase().includes(searchTerm)
+            );
+            displayGroups(filteredGroups);
+        });
+    </script>
+</body>
+</html>
